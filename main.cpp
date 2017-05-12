@@ -1,16 +1,22 @@
-#include <QGuiApplication>
-#include <QQuickView>
+#include <QApplication>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
 
+#include "socket.h"
 #include "board.h"
+
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
     qmlRegisterType<Board>("Board", 1, 0, "Board");
 
-    QQuickView *view = new QQuickView;
-    view->setSource(QUrl::fromLocalFile(":/main.qml"));
-    view->show();
+    Socket socket;
+
+    QQmlApplicationEngine engine;
+
+    engine.rootContext()->setContextProperty("socket", &socket);
+    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     return app.exec();
 }

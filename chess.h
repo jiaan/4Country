@@ -5,28 +5,36 @@
 #include <QString>
 #include <QPoint>
 #include <QList>
+#include <QColor>
 #include "board.h"
 
 class Chess : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name CONSTANT)
-    //Q_PROPERTY(QPoint location MEMBER m_location NOTIFY locationChanged)
     Q_PROPERTY(QPoint location READ location WRITE setLocation NOTIFY locationChanged)
     Q_PROPERTY(QList<QObject*> prediction MEMBER m_prediction NOTIFY predictionChanged)
+    Q_PROPERTY(bool isMine READ isMine CONSTANT)
+    Q_PROPERTY(QColor color READ color CONSTANT)
 
 
 public:
-    explicit Chess(Board *parent, const Board::State&, const QString&, const QPoint&);
-    explicit Chess(Board *parent);
+    explicit Chess(Board *parent, const Board::State&, const char, const QPoint&);
+
     QString name() const { return m_name; }
     QPoint location() const { return m_location;}
     void setLocation(const QPoint loc) { m_location = loc;}
+    bool isMine();
+    QColor color();
+    friend class Board;
 
 private:
     const Board::State m_player;
-    const QString m_name;
+    QString m_name;
+    const char m_id;
     QPoint m_location;
+
+
 
     Board* const pBoard;
     QList<QObject*> m_prediction;

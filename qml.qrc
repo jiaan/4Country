@@ -1,5 +1,10 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>welcome.qml</file>
+        <file>welcome.png</file>
+        <file>prepare.qml</file>
+        <file>game.qml</file>
+        <file>board.qml</file>
     </qresource>
 </RCC>

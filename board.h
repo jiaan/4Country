@@ -5,24 +5,18 @@
 #include <QPoint>
 #include <QColor>
 
-
 class Board : public QQuickPaintedItem
 {
     Q_OBJECT
-    Q_PROPERTY(int unitLen MEMBER m_unitLen NOTIFY unitLenChanged)
-    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+    Q_PROPERTY(int a MEMBER a NOTIFY aChanged)
+    Q_PROPERTY(int length READ length CONSTANT)
     Q_PROPERTY(QList<QObject*> chessList MEMBER m_chess NOTIFY chessListChanged)
-    Q_PROPERTY(bool predictionMode READ predictionMode WRITE setPredictionMode NOTIFY predictionModeChanged)
 
 public:
     Board(QQuickItem *parent = 0);
     enum class State { FORBIDDEN, EMPTY, PLAYER1, PLAYER2, PLAYER3, PLAYER4};
     void paint(QPainter *painter);
 
-    QColor color() const { return m_color;}
-    void setColor(const QColor &color) { m_color = color;}
-    bool predictionMode() const { return m_predictionMode; }
-    void setPredictionMode(const bool mode);
 
     State queryBoard(QPoint q);
     void setBoard(QPoint q, State state);
@@ -31,23 +25,33 @@ public:
 
 
 private:
-    static const int XSize = 10;
-    static const int YSize = 5;
+    static const int XSize = 19;
+    static const int YSize = 19;
     State m_grid[XSize][YSize];
-    int m_unitLen;
-    bool m_predictionMode = false;
+
+    int a; // unit length
     QColor m_color;
-    void ini();
+    uint m_seat[4]; //seat look-up table
+
+
+public:
+    int length() const { return (XSize-1)*a;} // total length
+    void requestMove_local(int sx, int sy, int dx, int dy);
+    void moveChess_local(int sx, int sy, int dx, int dy);
+    uint seat() { return m_seat[0]; }
 
 signals:
-    void colorChanged();
-    void unitLenChanged();
+    void aChanged();
     void chessListChanged();
-    void predictionModeChanged();
+    void requestMove(int sx, int sy, int dx, int dy);
+    void playerKilled(uint i);
+
+
 
 public slots:
-    int getWidth() const { return XSize;}
-    int getHeight() const { return YSize;}
+    void moveChess(int sx, int sy, int dx, int dy);
+    void connectSocket(QObject* socket);
+
 
 };
 
